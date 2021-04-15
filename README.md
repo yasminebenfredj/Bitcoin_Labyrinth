@@ -1,4 +1,4 @@
-# 3D_Labyrinthe
+# Bitcoin_Labyrinth
 
 ## Description du projet :
 
