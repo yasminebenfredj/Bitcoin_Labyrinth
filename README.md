@@ -18,6 +18,12 @@ La parti se termine lorsque tous les Bitcoins ont été retrouver et le gagnant 
 
 #### Date prévue pour la fin du projet :  
 
-*Le mardi 13 Avril*  
+*Le mardi 27 Avril*  
+
+
+#### Webographie :
+-   https://www.sharetextures.com
+-   https://opengameart.org/content/tileable-bricks-ground-textures-set-1
+ 
 
 -----------------------------------------------
