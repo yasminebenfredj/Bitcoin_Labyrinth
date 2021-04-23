@@ -327,7 +327,7 @@ function dfsGenerateLabyrinth(l, w , cubeSize) {
 
     startVertex = [0,0];
     randomizedDFS(l , w ,cubeSize,startVertex);
-    randomGenerateLabyrinth(l, w , cubeSize);
+    //randomGenerateLabyrinth(l, w , cubeSize);
 
 }
 
@@ -341,6 +341,14 @@ function randomizedDFS(l , w ,cubeSize,vertex) {
 
         randomizedDFS(l , w ,cubeSize,nextVertex);
         nextVertex = unvisitedNeighbour(l , w, cubeSize, vertex);
+    }
+
+    nextVertex = getRandomVertex(l , w, cubeSize);
+    while( nextVertex != null){
+        table[vertex[0]][vertex[1]] = false;
+
+        randomizedDFS(l , w ,cubeSize,nextVertex);
+        nextVertex = getRandomVertex(l , w, cubeSize);
     }
 
 }
@@ -374,7 +382,7 @@ function markVisitedNeighbours(l , w, cubeSize,vertex) {
     let y = vertex[1];
     for( var i = -1; i < 2 ; i++ ){
         for( var j = -1; j < 2 ; j++ ){
-            if(x+i < l/cubeSize &&  x+i>= 0  && y+j < w/cubeSize && y+j >= 0 && (i != j) && (i != -j) && (-i != j)){
+            if(x+i < l/cubeSize &&  x+i>= 0  && y+j < w/cubeSize && y+j >= 0 && (i != j) ){
                 visited[x+i][y+j] = true;
             }
         }
@@ -383,6 +391,7 @@ function markVisitedNeighbours(l , w, cubeSize,vertex) {
 
 
 function randomGenerateLabyrinth(l, w , cubeSize) {
+    
     for ( var i = 0; i < l/cubeSize ; i++) {
         for ( var j = 0; j < w/cubeSize ; j++) {
             if(Math.random() > 0.5){
@@ -409,10 +418,32 @@ function getRandomVertex(l , w, cubeSize) {
     let i = 0;
     let j = 0;
     let x = 0;
-    while(visited[i][j] && x < 500) {
+    while(visited[i][j] && x <= 101) {
         x++;
         i = Math.floor(Math.random() * (l/cubeSize));
         j = Math.floor(Math.random() * (w/cubeSize));
     }
+    if(x >=  100){
+        return null;
+    }
     return [i,j];
+}
+
+
+
+
+function randomGenerateLabyrinth2(l, w , cubeSize) {
+    let nextVertex = getRandomVertex(l , w, cubeSize);
+    while (nextVertex != null) {
+
+    }
+    
+    for ( var i = 0; i < l/cubeSize ; i++) {
+        for ( var j = 0; j < w/cubeSize ; j++) {
+            if(Math.random() > 0.5){
+                table[i][j] = false ;
+
+            }
+        }
+    }
 }
