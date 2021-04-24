@@ -6,13 +6,9 @@ class Player {
 	positionX;
 	positionY;
 	positionZ;
-
 	rotationY;
 
-
-
-
-	constructor(name, scene) {
+	constructor(name) {
 
 		let r = Math.floor(Math.random() * (255 - 0 + 1));
 		let g = Math.floor(Math.random() * (255 - 0 + 1));
@@ -21,10 +17,10 @@ class Player {
 
 		this.name = name;
 		this.score = 0;
-		this.positionX = 0;
-		this.positionY = 16;
-		this.positionZ = 0;
-		this.vitesse = 1;
+		this.positionX = -290;
+		this.positionY = 5;
+		this.positionZ = -290;
+		this.vitesse = 2;
 
 		this.rotationY = 0;
 
@@ -34,7 +30,7 @@ class Player {
 		let mesh;
 		BABYLON.SceneLoader.ImportMesh("", "./documents/models/tank/", "CartoonTank.babylon", scene, (newMeshes, particleSystems, skeletons) => {
 				mesh = newMeshes[0];
-				mesh.name = me.name;
+				mesh.name = this.name;
 				let material = new BABYLON.StandardMaterial("material", scene);
 				material.diffuseTexture = new BABYLON.Texture("./documents/models/tank/tank_palette_red.png");
 				material.emissiveTexture = new BABYLON.Texture("./documents/models/tank/tank_palette_red.png");
@@ -42,10 +38,12 @@ class Player {
 				mesh.rotationOffset = 90; // the viewing angle
 
 				// By default the box/tank is in 0, 0, 0, let's change that...
-				mesh.position.y = me.positionY;
+				mesh.position.y = this.positionY;
+				mesh.position.x = this.positionX;
+				mesh.position.z = this.positionZ;
 
-				mesh.speed = me.vitesse;
-				mesh.scaling = new BABYLON.Vector3(2, 1, 1);
+				mesh.speed = this.vitesse;
+				mesh.scaling = new BABYLON.Vector3(1, 0.5, 0.5);
 				mesh.frontVector = new BABYLON.Vector3(0, 0, 1);
 				mesh.applyGravity = true;
 				mesh.checkCollisions = false;
@@ -72,11 +70,11 @@ class Player {
 
 					}
 					if (inputStates.left) {
-						mesh.rotation.y -= 0.02;
+						mesh.rotation.y -= 0.05;
 						mesh.frontVector = new BABYLON.Vector3(Math.sin(mesh.rotation.y), 0, Math.cos(mesh.rotation.y));
 					}
 					if (inputStates.right) {
-						mesh.rotation.y += 0.02;
+						mesh.rotation.y += 0.05;
 						mesh.frontVector = new BABYLON.Vector3(Math.sin(mesh.rotation.y), 0, Math.cos(mesh.rotation.y));
 					}
 
@@ -89,7 +87,7 @@ class Player {
 								new BABYLON.ExecuteCodeAction(
 									{ trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger, parameter: gift },
 									() => {
-										me.score += 10;
+										this.score += 10;
 										gift.dispose();
 									}
 								)
@@ -98,11 +96,11 @@ class Player {
 						);
 					}
 
-					me.positionX = mesh.position.x;
-					me.positionY = mesh.position.y;
-					me.positionZ = mesh.position.z;
+					this.positionX = mesh.position.x;
+					this.positionY = mesh.position.y;
+					this.positionZ = mesh.position.z;
 				
-					me.rotationY = mesh.rotation.x;
+					this.rotationY = mesh.rotation.y;
 				}
 			});
 		return mesh;

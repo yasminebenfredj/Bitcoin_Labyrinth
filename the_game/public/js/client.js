@@ -80,7 +80,6 @@ function startGame()
     
     //moveCurrentPlayer();
 
-
     if(scene.gifts) {
       for(var i = 0 ; i < scene.gifts.length ; i++) {
           scene.gifts[i].Gift.move(scene);
@@ -97,8 +96,8 @@ function createScene() {
   container = new BABYLON.AssetContainer(scene);
 
   let ground = createGround(scene);
-
   container.meshes.push(ground);
+
   let freeCamera = createFreeCamera(scene);
 
   //let followCamera = createFollowCamera(scene, tank);
@@ -108,11 +107,11 @@ function createScene() {
 
   createLights(scene, container);
   createSky(scene);
-  createGifts(scene);
 
   //container.meshes.push(scene.gifts);
-  //createwalls(scene, container);
+  createwalls(scene, container);
   createLabyrinth(scene, container);
+  createGifts(scene);
 
   return scene;
 }
@@ -138,41 +137,6 @@ function moveAllPlayers()
 
 
 
-
-function createGifts(scene) {
-  // load the Dude 3D animated model
-   // name, folder, skeleton name 
-   BABYLON.SceneLoader.ImportMesh("BITCOIN", "./documents/models/gift/", "gift.babylon", scene,  (newMeshes, particleSystems, skeletons) => {
-       let myGift = newMeshes[0];
-
-       let giftMaterial = new BABYLON.StandardMaterial("Tree", scene);
-       giftMaterial.diffuseTexture = new BABYLON.Texture("./documents/models/gift/BTC_Albedo.png");
-       myGift.material = giftMaterial;
-
-       myGift.position = new BABYLON.Vector3(2, 2, 2);  
-       myGift.position.y = -20;
-
-       myGift.name = "myGift";
-       myGift.applyGravity = true;
-
-       // params = id, speed, scaling, scene
-       let hero = new Gift(myGift, -1, 0.1, 3, scene);
-
-       // make clones
-       scene.gifts = [];
-       
-       for(let i = 0; i < 10; i++) {
-           scene.gifts[i] = hero.doClone(myGift, skeletons, i);
-           scene.gifts[i].applyGravity = true;
-           scene.gifts[i].position.y = 20;
-
-           // Create instance with move method etc.
-           // params = speed, scaling, scene
-           var temp = new Gift(scene.gifts[i], i, 0.3, 0.2, scene);
-       }
-
-   });
-}
 
 
 
@@ -243,6 +207,9 @@ function modifySettings() {
       }
   }, false);
 }
+
+
+
 
 
 
