@@ -1,9 +1,12 @@
+var goodAudio = new Audio('documents/sounds/good.mp3');
+var badAudio = new Audio('documents/sounds/bad.mp3');
 
 let canvas, mousePos;
 let me = undefined;
 let socket;
 var username, container;
 let player  = undefined;
+let time = 0;
 
 // Autres joueurs
 let allPlayers = {};
@@ -17,7 +20,7 @@ window.onload = init;
 function init() {
 
   username = prompt("Quel est votre nom?");
-  alert("Bon Courage "+ username);
+  alert("Vous avez 1 minutes pour retrouver les 10 pieces et la clé du coffre. \nNe vous perdez pas ;)\n  Bon Courage! "+ username);
 
   // initialize socket.io client-side
   socket = io.connect();
@@ -30,6 +33,7 @@ function init() {
     // connection with server
     me =  new Player(username, scene);
     player  = me.createMe(scene);
+
 
     let data = me;
     socket.emit("connection", data, username);
@@ -57,7 +61,7 @@ function init() {
 
 function startGame() 
 {
-  console.log("init");
+  console.log("start");
   canvas = document.querySelector("#myCanvas");
 
   engine = new BABYLON.Engine(canvas, true);
@@ -65,9 +69,9 @@ function startGame()
   container.addAllToScene();
   modifySettings();
 
+  time = Date.now();
   engine.runRenderLoop(() => {
-
-
+    draw();
 
     if(player != undefined)
     {
@@ -112,6 +116,7 @@ function createScene() {
   createwalls(scene, container);
   createLabyrinth(scene, container);
   createGifts(scene);
+  createBase(scene) ;
 
   return scene;
 }
@@ -176,6 +181,8 @@ function modifySettings() {
   inputStates.up = false;
   inputStates.down = false;
   inputStates.space = false;
+
+
   
   //add the listener to the main, window object, and update the states
   window.addEventListener('keydown', (event) => {
