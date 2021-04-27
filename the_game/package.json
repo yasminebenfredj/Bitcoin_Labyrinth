@@ -2,9 +2,9 @@
   "name": "bitcoinlabyrinth",
   "version": "1.0.0",
   "description": "Vous devrez installer les modules node js express et socket.io pour pouvoir executer ces jeu. 1) tapez \"npm install express\" puis \"npm install socket.io\", puis executez node server.js et ouvrez localhost:8080.",
-  "main": "client.js",
+  "main": "the_game/public/js/client.js",
   "scripts": {
-    "start": "node ./the_game/server.js",
+    "start": "the_game/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Yasmine Ben Fredj",
@@ -12,14 +12,5 @@
   "dependencies": {
     "express": "^4.17.1",
     "socket.io": "^3.1.1"
-  },
-  "devDependencies": {},
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/yasminebenfredj/Bitcoin_Labyrinth.git"
-  },
-  "bugs": {
-    "url": "https://github.com/yasminebenfredj/Bitcoin_Labyrinth/issues"
-  },
-  "homepage": "https://github.com/yasminebenfredj/Bitcoin_Labyrinth#readme"
+  }
 }
