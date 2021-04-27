@@ -7,9 +7,9 @@ const io = require('socket.io')(http);
 let labyrinth , visited;
 let sizeCube = 30;
 let sceneSize = 600;
-
-http.listen(8082, () => {
-	console.log("Web server écoute sur http://localhost:8082");
+let port = process.env.PORT || 3000;
+http.listen(port, () => {
+	console.log("Web server écoute sur http://localhost:", port);
 })
 
 // Indicate where static files are located. 
