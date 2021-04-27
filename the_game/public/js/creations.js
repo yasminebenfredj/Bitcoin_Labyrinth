@@ -3,19 +3,19 @@
 // https://www.baeldung.com/cs/maze-generation
 
 let  table , visited;
-let sizeCube = 40;
-let sceneSize = 1000;
+let sizeCube = 30;
+let sceneSize = 600;
 
 
 function createLabyrinth(scene, container) {
-  
+  /*
   
     const wallMaterial = new BABYLON.StandardMaterial("wallMaterial", scene);
     wallMaterial.emissiveTexture = new BABYLON.Texture("./documents/images/moss-diffuse.jpg");
     wallMaterial.bumpTexture = new BABYLON.Texture("./documents/images/wall_moss-normal.jpg");
     wallMaterial.parallaxScaleBias = 0.1;
     wallMaterial.specularPower = 1000.0;
-
+*/
     const grassMaterial = new BABYLON.StandardMaterial("grass");
     grassMaterial.diffuseTexture = new BABYLON.Texture("./documents/images/Grass_02.png");
 	grassMaterial.bumpTexture = new BABYLON.Texture("./documents/images/Grass_02_Nrm.png");
@@ -54,12 +54,12 @@ function createLabyrinth(scene, container) {
                 //console.log( -(sceneSize/2)+(i*(sizeCube)),  -(sceneSize/2)+(j*(sizeCube)) );
 
                 let etage1 = walls[index].clone("clone1"+index);
-                //let etage2 = walls[index].clone("clone1"+index);
+                let etage2 = walls[index].clone("clone1"+index);
                 etage1.position.y = sizeCube/2 + sizeCube;
-                //etage2.position.y = sizeCube/2 + (sizeCube * 2);
+                etage2.position.y = sizeCube/2 + (sizeCube * 2);
           
                 container.meshes.push(etage1);
-                //container.meshes.push(etage2);
+                container.meshes.push(etage2);
           
                 container.meshes.push(walls[index]);
                 index++;
@@ -192,9 +192,20 @@ function getRandomVertex(l , w, cubeSize) {
 
 
 function createGifts(scene) {
-    // load the Dude 3D animated model
-     // name, folder, skeleton name 
-     BABYLON.SceneLoader.ImportMesh("BITCOIN", "./documents/models/gift/", "gift.babylon", scene,  (newMeshes, particleSystems, skeletons) => {
+    let meshTask = scene.assetsManager.addMeshTask(
+        "BITCOIN task",
+        "BITCOIN",
+        "./documents/models/gift/",
+        "gift.babylon"
+      );
+      meshTask.onSuccess = function (task) {
+        onGiftImported(
+          task.loadedMeshes,
+          task.loadedParticleSystems,
+          task.loadedSkeletons
+        );
+      };
+      function onGiftImported(newMeshes, particleSystems, skeletons) {
         let myGift = newMeshes[0];
  
         let giftMaterial = new BABYLON.StandardMaterial("Tree", scene);
@@ -204,20 +215,20 @@ function createGifts(scene) {
   
         myGift.position = new BABYLON.Vector3(2, 3, 2); 
         myGift.scaling = new BABYLON.Vector3(1, 2, 1); 
-        myGift.position.y = -100;
   
         myGift.name = "myGift";
         myGift.applyGravity = true;
+        myGift.y = -300;
   
          // params = id, speed, scaling, scene
         let hero = new Gift(myGift, -1, 0.1, 3, scene);
          // make clones
-         scene.gifts = [];
+        scene.gifts = [];
          
-         index = 0;
-         for ( var i = 0; i < sceneSize/sizeCube ; i = i + 2) {
-            for ( var j = 0; j < sceneSize/sizeCube ; j= j + 2) {
-                if(!lab[i][j] && Math.random() > 0.8 && nbGift > 0)
+        index = 0;
+        for ( var i = 0; i < sceneSize/sizeCube ; i = i + 2) {
+            for ( var j = 0; j < sceneSize/sizeCube ; j = j + 2) {
+                if(!lab[i][j] && Math.random() > 0.9 && nbGift > 0)
                 {
                     scene.gifts[index] = hero.doClone(myGift, skeletons, i);
                     scene.gifts[index].applyGravity = true;
@@ -234,6 +245,6 @@ function createGifts(scene) {
                 }
             }
         }
-  
-     });
+        scene.gifts.unshift(myGift)
+      }
   }

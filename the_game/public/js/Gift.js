@@ -10,13 +10,9 @@ class Gift {
         else
             this.speed = 1;
 
-        // in case, attach the instance to the mesh itself, in case we need to retrieve
-        // it after a scene.getMeshByName that would return the Mesh
-        // SEE IN RENDER LOOP !
         giftMesh.Gift = this;
-
         // scaling
-        this.giftMesh.scaling = new BABYLON.Vector3(1 , 1, 1);
+        this.giftMesh.scaling = new BABYLON.Vector3(1 ,1, 1);
 
 
     }
@@ -27,11 +23,9 @@ class Gift {
 
     doClone(originalMesh, skeletons, id) {
         let myClone;
-        let xrand = Math.floor(Math.random()*500 - 250);
-        let zrand = Math.floor(Math.random()*500 - 250);
-      
+
         myClone = originalMesh.clone("clone_" + id);
-        myClone.position = new BABYLON.Vector3(xrand, 0, zrand);
+        myClone.position = new BABYLON.Vector3(0, 0, 0);
       
         if(!skeletons) return myClone;
       

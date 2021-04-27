@@ -5,32 +5,27 @@
 		<meta charset="UTF-8">
 		<link rel="stylesheet" href="css/styles.css">
 		<script src="/socket.io/socket.io.js"></script>
-		<script src="https://cdn.babylonjs.com/babylon.max.js"></script>
+		<script src="lib/babylon.max.js"></script>
+		<script src="lib/cannon.js"></script>
 		<script src="js/creations.js"></script>
 		<script src="js/functionsUtils.js"></script>
 		<script src="js/Gift.js"></script>
 		<script src="js/client.js"></script>
 		<script src="js/Player.js"></script>
 		<script src="js/world.js"></script>
-
-
 	</head>
     <body>
-		<div class="score" id="score"></div>
-        <canvas id="myCanvas" width=1499 height=1099></canvas>
-		<div class="playerList">
+		<canvas id="myCanvas" width=1500 height=1200></canvas>
+		<div class="temps">
+			Temps restant : <span id="time"></span> seconds
+		</div>
+		<div class="playersList">
 			<center><font size="+2"><b>Scores des Joueurs   </b></font></center>
-			<p>
 			<div id="playersScore"></div>
-			</p>
-			<p>
-			<div class="vies" id="vie"></div>
-			<div class="coins" id="coin"></div>
-			</p>
-
 		</div>
 
-
+		<div class="vies" id="vie"></div>
+		<div class="coins" id="coin"></div>
 
     </body>
 </html>

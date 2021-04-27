@@ -20,7 +20,7 @@ class Player {
 		this.positionX = 0;
 		this.positionY = 1;
 		this.positionZ = 0;
-		this.vitesse = 3;
+		this.vitesse = 2;
 
 		this.rotationY = 0;
 
@@ -52,14 +52,6 @@ class Player {
 				mesh.applyGravity = true;
 				mesh.checkCollisions = false;
 
-				//shadow 
-				var light = new BABYLON.PointLight("playerL", mesh.position, scene); //soleil
-				//light.position.y = 100;
-				light.intensity = 1;
-				var shadow = new BABYLON.ShadowGenerator(1024, light);
-				shadow.addShadowCaster(mesh);
-				shadow.useExponentialShadowMap = true;
-				container.lights.push(light);
 
 				// move
         		skeleton.animationPropertiesOverride = new BABYLON.AnimationPropertiesOverride();
@@ -73,7 +65,7 @@ class Player {
 
 
 				//if (box) scene.beginAnimation(skeleton, box.from, box.to, true);
-				if (stop) scene.beginAnimation(skeleton, stop.from+1, stop.to, true, 2);
+				if (stop) scene.beginAnimation(skeleton, stop.from+1, stop.to, true, 1);
 				//if (pose) scene.beginAnimation(skeleton, pose.from, pose.to, true);
 
 
@@ -94,9 +86,6 @@ class Player {
 
 				mesh.move = () => {
 					nb++;
-					
-
-
 					let yMovement = 0;
 					let zMovement = 0;
 					if (mesh.position.y > 2) {
@@ -107,7 +96,7 @@ class Player {
 
 					if (inputStates.up) {
 						if(!isWalk) {
-							if (walk) scene.beginAnimation(skeleton, walk.from, walk.to, true,0.5);
+							if (walk) scene.beginAnimation(skeleton, walk.from, walk.to, true,1);
 							isWalk = true;
 						}
 						nb = 0;
@@ -135,14 +124,16 @@ class Player {
 
 					}
 					if(nb>10 && isWalk){
-						if (stop) scene.beginAnimation(skeleton, stop.from+1, stop.to, true, 0.5);
+						if (stop) scene.beginAnimation(skeleton, stop.from+1, stop.to, true, 1);
 						isWalk = false;
 
 					}
 					if (inputStates.space) {
-						boxAudio.play();
+						scene.assets.boxAudio.setPosition(mesh.position);
+						scene.assets.boxAudio.setVolume(0.7);
+						scene.assets.boxAudio.play();
 						isWalk = true;
-						if (box) scene.beginAnimation(skeleton, box.from, box.to, true, 1.5);
+						if (box) scene.beginAnimation(skeleton, box.from, box.to, true, 1);
 						nb = -10;
 					}
 
@@ -159,7 +150,7 @@ class Player {
 						)
 					);
 
-					if((mesh.position.x >= 15 || mesh.position.x <= -15) && (mesh.position.z >= 15 || mesh.position.z <= -15 )){
+					if((mesh.position.x >= 10 || mesh.position.x <= -10) && (mesh.position.z >= 10 || mesh.position.z <= -10 )){
 						mesh.position.y = 1;
 					}
 
@@ -170,7 +161,11 @@ class Player {
 								new BABYLON.ExecuteCodeAction(
 									{ trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger, parameter: gift },
 									() => {
-										giftAudio.play();
+										if(scene.assets.giftAudio){
+											scene.assets.giftAudio.setPosition(gift.position);
+											scene.assets.giftAudio.setVolume(0.7);
+											scene.assets.giftAudio.play();
+										}
 										this.score += 1;
 										gift.dispose();
 										drawCoin();
@@ -181,8 +176,6 @@ class Player {
 						);
 					}
 					 
-					light.position = mesh.position;
-
 					this.positionX = mesh.position.x;
 					this.positionY = mesh.position.y;
 					this.positionZ = mesh.position.z;

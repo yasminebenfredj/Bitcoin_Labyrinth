@@ -11,7 +11,7 @@ function createGround(scene)
 	
     const ground = new BABYLON.MeshBuilder.CreateTiledGround("Tiled Ground", {xmin: -sceneSize*0.7, zmin: -sceneSize*0.7, xmax: sceneSize*0.7, zmax: sceneSize*0.7, subdivisions: grid});
 
-	//Create the multi material
+
     //Create differents materials
     /*
     const grassMaterial = new BABYLON.StandardMaterial("grass");
@@ -52,11 +52,9 @@ function createGround(scene)
 	rockMaterial3.specularColor = new BABYLON.Color3(0.5, 0.5, 0.5);
     ground.material = rockMaterial3;
 
-    // Needed variables to set subMeshes
     const verticesCount = ground.getTotalVertices();
     const tileIndicesLength = ground.getIndices().length / (grid.w * grid.h);
     
-    // Set subMeshes of the tiled ground
     ground.subMeshes = [];
     let base = 0;
     for (let row = 0; row < grid.h; row++) {
@@ -65,14 +63,13 @@ function createGround(scene)
             base += tileIndicesLength;
         }
     }
-  return ground;
-
+    container.meshes.push(ground);
 }
 
 function createSky(scene)
 {
 
-  const skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size:2000}, scene);
+  const skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size:1000}, scene);
   const skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
   skyboxMaterial.backFaceCulling = false;
   skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("./documents/models/sky/skybox", scene);
@@ -104,7 +101,7 @@ function createLights(scene, container) {
     container.lights.push(light1);
     container.lights.push(light2);
     container.lights.push(light3);
-  
+  /*
   
      var light4 = new BABYLON.PointLight("dir5", new BABYLON.Vector3(0, 1000, 0), scene); //soleil
     light4.intensity = 1;
@@ -126,6 +123,7 @@ function createLights(scene, container) {
     light8.position = new BABYLON.Vector3(-500, 300, 500);
     light8.intensity = 1;
     container.lights.push(light8);
+    */
     
   }
   
@@ -286,9 +284,9 @@ function createFollowCamera(scene, target) {
 function createUniversalCamera(scene, target) {
 
     //Add the camera, to be shown as a cone and surrounding collision volume
-    var camera = new BABYLON.UniversalCamera("MyCamera", new BABYLON.Vector3(0, 200,0), scene);
+    var camera = new BABYLON.UniversalCamera("MyCamera", new BABYLON.Vector3(0, 190,-10), scene);
     //camera.attachControl(canvas, true);
-    camera.speed = 3;
+    camera.speed = 2;
     camera.angularSpeed = 0.07;
     camera.checkCollisions = true;
     camera.cameraRotation = new BABYLON.Vector2(0,180);
@@ -309,12 +307,23 @@ function hautCamera(scene) {
 
 
 function createBase(scene) {
-
-    // load the Dude 3D animated model
-     // name, folder, skeleton name 
-     BABYLON.SceneLoader.ImportMesh("shrine", "./documents/models/jardin/", "SportModel.babylon", scene,  (newMeshes, particleSystems, skeletons) => {
+    let meshTask = scene.assetsManager.addMeshTask(
+        "shrine task",
+        "shrine",
+        "./documents/models/jardin/",
+        "SportModel.babylon"
+      );
+    
+      meshTask.onSuccess = function (task) {
+        onBaseImported(
+          task.loadedMeshes,
+          task.loadedParticleSystems,
+          task.loadedSkeletons
+        );
+      };
+    
+      function onBaseImported(newMeshes, particleSystems, skeletons) {
         let shrine = newMeshes[0];
- 
         let shrineMaterial = new BABYLON.StandardMaterial("shrine", scene);
         shrineMaterial.diffuseTexture = new BABYLON.Texture("./documents/models/jardin/shrine_001_diff1.png");
         shrineMaterial.bumpTexture = new BABYLON.Texture("./documents/models/jardin/shrine_texture_nrm1.jpg");
@@ -329,8 +338,7 @@ function createBase(scene) {
         shrine.checkCollisions = false;
 
         container.meshes.push(shrine);
-
-    });
+    };
 
 }
 

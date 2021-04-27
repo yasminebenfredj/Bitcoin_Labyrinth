@@ -5,19 +5,20 @@ html, body {
 
 #myCanvas {
   border:1px solid red;
-  width:100%;
-  height:100%;
+  width:99.89%;
+  height:99.7%;
+  position: absolute;
 }
 
 
-.playerList {
-  background-color:rgba(244, 243, 243, 0.5);
+.playersList {
+  background-color:rgba(254, 254, 253, 0.8);
   
   width:250px;
   padding:10px;
   overflow:scroll-y;
   position: absolute;
-  top: 10px;
+  top: 20px;
   font-size:medium;
   margin-left: 3%;
   margin-top: 3%;
@@ -28,26 +29,37 @@ html, body {
 
   width:200px;
   height:50px;
-
-  padding:10px;
   position: absolute;
-  top: 100px;
-  margin-left: 1%;
-  margin-top: 340%;
+  margin-left: 2%;
+  bottom: 13%;
 
 }
 
 
 .coins {
-
   width:1000px;
   height:50px;
-
-  padding:10px;
   position: absolute;
-  top: 100px;
-  margin-left: 1%;
-  margin-top: 365%;
+  margin-left: 2%;
+  bottom: 3%;
+}
+
+.temps {
+  top: 1px;
+  width:250px;
+  height:23px;
+  border-right:2px solid white;
+  border-left:2px solid white;
+  border-top:2px solid white;
+  border-bottom:2px solid white;
+  background-color:rgba(7, 7, 7, 0.7);
+  overflow:scroll-y;
+  position: absolute;
+  font-size:large;
+  text-align: center;
+  color: beige;
+  margin-left: 4%;
+  margin-top: 1%;
 
 }
 

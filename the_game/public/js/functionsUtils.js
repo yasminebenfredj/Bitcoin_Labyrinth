@@ -24,35 +24,32 @@ function updatePlayersScore (players)
 
 
 
-function endGame() {
+function endGame(scene) {
     let playTime = Date.now() - time;
 
-    if (nbVie > 1){
-        goodAudio.play(true); 
-    }
-    else{
-        goodAudio.pause(); 
-        badAudio.play(true); 
+
+    if (nbVie < 2 ){
+         scene.assets.goodAudio.setVolume(0);
+        scene.assets.badAudio.setVolume(0.7);
     }
 
-    if (playTime > 300010 && scene.gifts){
-
+    if (playTime > 190010 && scene.gifts){
+        scene.assets.badAudio.setVolume(0);
+        scene.assets.goodAudio.setVolume(0.7);
+        
         if(me.score < 10) {
-
             alert("Le jeu est terminer "+me.name+"!  \nVous avez perdu avec : "+me.score+" monnais recolter. ");
             return true;
         }
         else{
-            badAudio.pause(); 
-            goodAudio.play(true); 
+
             alert("Le jeu est terminer "+me.name+"! \nVous avez gagner avec : "+me.score+" monnais recolter.");
             return true;
         }
     }
 
-    if (vies.firstChild && playTime >= 100000*(4-nbVie)){
+    if (vies.firstChild && playTime >= 63000*(4-nbVie)){
         vies.removeChild(vies.firstChild);
-        //if (vies.firstChild){vies.removeChild(vies.firstChild);}
         nbVie--;
     }
     return false;
@@ -80,4 +77,10 @@ function drawCoin(){
     for(var i = 0 ; i < me.score ; i++){
         coins.innerHTML += userLineOfHTML;
     }
+  }
+
+
+  function showTime() {
+    let show = document.querySelector("#time");
+    show.innerHTML = Math.floor((190000 - (Date.now() - time))/1000);
   }

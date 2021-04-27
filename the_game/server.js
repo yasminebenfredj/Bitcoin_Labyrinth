@@ -1,5 +1,4 @@
 const express = require('express')
-const Player = require('./public/js/Player')
 const app = express();
 const http = require('http').Server(app);
 
@@ -28,6 +27,7 @@ var listOfPlayers = {};
 io.on('connect', (socket) => {
 	// Nouveau joueur 
 	socket.on('connection', (data, username) => {
+		console.log(data);
 		socket.username = username;
 		
 		listOfPlayers[username] = data;

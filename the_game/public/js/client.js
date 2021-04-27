@@ -1,7 +1,7 @@
-var goodAudio = new Audio('documents/sounds/good.mp3'); //j'ai pas trouver mon bonheur dans Babylon.sounds
-var badAudio = new Audio('documents/sounds/bad.mp3');
-var boxAudio = new Audio('documents/sounds/box.wav');
-var giftAudio = new Audio('documents/sounds/gift.wav');
+//var goodAudio = new Audio('documents/sounds/good.mp3'); //j'ai pas trouver mon bonheur dans Babylon.sounds
+//var badAudio = new Audio('documents/sounds/bad.mp3');
+//var boxAudio = new Audio('documents/sounds/box.wav');
+//var giftAudio = new Audio('documents/sounds/gift.wav');
 
 let canvas, mousePos;
 let me = undefined;
@@ -10,7 +10,7 @@ var username, container;
 let player  = undefined;
 let time = 0;
 let nbVie = 3;
-let nbGift = 20;
+let nbGift = 15;
 
 // Autres joueurs
 let allPlayers = {};
@@ -40,9 +40,7 @@ function init() {
     me =  new Player(username, scene);
     player  = me.createMe(scene);
 
-
-    let data = me;
-    socket.emit("connection", data, username);
+    socket.emit("connection", me, username);
 
   });
 
@@ -72,6 +70,9 @@ function startGame()
 
   engine = new BABYLON.Engine(canvas, true);
   scene = createScene();
+
+  scene.enablePhysics();
+
   container.addAllToScene(); //comme asset pour contenir les ellement du jeu 
   modifySettings();
 
@@ -80,8 +81,10 @@ function startGame()
   nbVie = 3;
   time = Date.now();
 
-  engine.runRenderLoop(() => {
-    let endOfGame = endGame();
+  scene.toRender = () => {
+    showTime()
+    let endOfGame = endGame(scene);
+
     if(endOfGame){
       var response;
       var response = confirm("Voulez vous rejouer ? ");
@@ -99,7 +102,6 @@ function startGame()
       socket.emit("updatePlayerData", me.name, me);
 
     }
-
     
     //moveCurrentPlayer();
 
@@ -109,7 +111,8 @@ function startGame()
       }
     }
     scene.render();
-  });
+  };
+  scene.assetsManager.load();
 
 }
 
@@ -119,27 +122,145 @@ function createScene() {
   let scene = new BABYLON.Scene(engine);
 
   container = new BABYLON.AssetContainer(scene);
+  scene.assetsManager = configureAssetManager(scene);
 
-  let ground = createGround(scene);
-  container.meshes.push(ground);
-
-  let freeCamera = createFreeCamera(scene);
-
+  //let freeCamera = createFreeCamera(scene);
   //let followCamera = createFollowCamera(scene, tank);
+  //scene.activeCamera = freeCamera;
 
-
-  scene.activeCamera = freeCamera;
-
-  createLights(scene, container);
+  createGround(scene);
   createSky(scene);
+  createLights(scene, container);
 
   //container.meshes.push(scene.gifts);
   createwalls(scene, container);
   createLabyrinth(scene, container);
   createBase(scene) ;
+  loadSounds(scene);
 
   return scene;
 }
+
+
+
+
+function configureAssetManager(scene) {
+  // useful for storing references to assets as properties. i.e scene.assets.cannonsound, etc.
+  scene.assets = {};
+
+  let assetsManager = new BABYLON.AssetsManager(scene);
+
+  assetsManager.onProgress = function (
+    remainingCount,
+    totalCount,
+    lastFinishedTask
+  ) {
+    engine.loadingUIText =
+      "We are loading the scene. " +
+      remainingCount +
+      " out of " +
+      totalCount +
+      " items still need to be loaded.";
+    console.log(
+      "We are loading the scene. " +
+        remainingCount +
+        " out of " +
+        totalCount +
+        " items still need to be loaded."
+    );
+  };
+
+  assetsManager.onFinish = function (tasks) {
+    engine.runRenderLoop(function () {
+      scene.toRender();
+    });
+  };
+
+  return assetsManager;
+}
+
+
+
+//var goodAudio = new Audio('documents/sounds/good.mp3'); //j'ai pas trouver mon bonheur dans Babylon.sounds
+//var badAudio = new Audio('documents/sounds/bad.mp3');
+//var boxAudio = new Audio('documents/sounds/box.wav');
+//var giftAudio = new Audio('documents/sounds/gift.wav');
+
+
+function loadSounds(scene) {
+  var assetsManager = scene.assetsManager;
+  var binaryTask = assetsManager.addBinaryFileTask(
+    "goodAudio",
+    "documents/sounds/good.mp3"
+  );
+  binaryTask.onSuccess = function (task) {
+    scene.assets.goodAudio = new BABYLON.Sound(
+      "goodAudio",
+      task.data,
+      scene,
+      null,
+      { loop: true,  autoplay: true}
+    );
+  };
+
+  binaryTask = assetsManager.addBinaryFileTask(
+    "badAudio",
+    "documents/sounds/bad.mp3"
+  );
+  binaryTask.onSuccess = function (task) {
+    scene.assets.badAudio = new BABYLON.Sound(
+      "badAudio",
+      task.data,
+      scene,
+      null,
+      { loop: true,  autoplay: true}
+
+    );
+    scene.assets.badAudio.setVolume(0);
+
+  };
+
+  binaryTask = assetsManager.addBinaryFileTask(
+    "boxAudio", 
+    "documents/sounds/box.wav");
+  binaryTask.onSuccess = function (task) {
+    scene.assets.boxAudio = new BABYLON.Sound(
+      "boxAudio", 
+      task.data, scene, null, {
+      loop: false,
+      spatialSound: true
+    });
+  };
+  binaryTask = assetsManager.addBinaryFileTask(
+    "giftAudio",
+    "documents/sounds/gift.wav"
+  );
+  binaryTask.onSuccess = function (task) {
+    scene.assets.giftAudio = new BABYLON.Sound(
+      "giftAudio",
+      task.data,
+      scene,
+      null,
+      { loop: false, spatialSound: true }
+    );
+  };
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 function updatePlayers(listOfPlayers, playerNames) 
@@ -158,11 +279,6 @@ function moveAllPlayers()
   }
 
 }
-
-
-
-
-
 
 
 window.addEventListener("resize", () => {
