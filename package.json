@@ -4,6 +4,7 @@
   "description": "Vous devrez installer les modules node js express et socket.io pour pouvoir executer ces jeu. 1) tapez \"npm install express\" puis \"npm install socket.io\", puis executez node server.js et ouvrez localhost:8080.",
   "main": "client.js",
   "scripts": {
+    "start": "server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Yasmine Ben Fredj",
