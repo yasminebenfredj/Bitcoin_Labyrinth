@@ -33,7 +33,21 @@ html, body {
   position: absolute;
   top: 100px;
   margin-left: 1%;
-  margin-top: 355%;
+  margin-top: 340%;
+
+}
+
+
+.coins {
+
+  width:1000px;
+  height:50px;
+
+  padding:10px;
+  position: absolute;
+  top: 100px;
+  margin-left: 1%;
+  margin-top: 365%;
 
 }
 

@@ -38,7 +38,6 @@ function endGame() {
     if (playTime > 300010 && scene.gifts){
 
         if(me.score < 10) {
-            badAudio.play(true); 
 
             alert("Le jeu est terminer "+me.name+"!  \nVous avez perdu avec : "+me.score+" monnais recolter. ");
             return true;
@@ -62,6 +61,7 @@ function endGame() {
 
 function resetPlayers(){
     vies.innerHTML = "";
+    coins.innerHTML = "";
 
     let userLineOfHTML = "<img src='./documents/images/vie.jpg' height='50px' width='50px'>";
     vies.innerHTML += userLineOfHTML;
@@ -72,3 +72,12 @@ function resetPlayers(){
 		player.score = 0;
 	}
 }
+
+function drawCoin(){
+    coins.innerHTML = "";
+    let userLineOfHTML = "<img src='./documents/images/coin.png' height='50px' width='50px'>";
+
+    for(var i = 0 ; i < me.score ; i++){
+        coins.innerHTML += userLineOfHTML;
+    }
+  }

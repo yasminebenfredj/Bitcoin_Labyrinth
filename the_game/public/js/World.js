@@ -86,6 +86,8 @@ function createSky(scene)
 
 
 
+
+
 function createLights(scene, container) {
     // i.e sun light with all light rays parallels, the vector is the direction.
    
@@ -120,8 +122,9 @@ function createLights(scene, container) {
     light7.intensity = 1;
     container.lights.push(light7);
   
-    var light8 = new BABYLON.DirectionalLight("dir5", new BABYLON.Vector3(0, -1, 0), scene); //soleil
-    light8.intensity = .3;
+    var light8 = new BABYLON.DirectionalLight("dir9", new BABYLON.Vector3(0, -1, 0), scene); //soleil
+    light8.position = new BABYLON.Vector3(-500, 300, 500);
+    light8.intensity = 1;
     container.lights.push(light8);
     
   }

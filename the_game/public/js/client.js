@@ -31,6 +31,7 @@ function init() {
 
   playersScore = document.querySelector("#playersScore");
   vies = document.querySelector("#vie");
+  coins = document.querySelector("#coin");
 
 
 
@@ -87,8 +88,6 @@ function startGame()
       if (response == true) {
         startGame();
       } else {
-        goodAudio.pause(); 
-        badAudio.pause(); 
         alert("Au revoir!");
       }
     }

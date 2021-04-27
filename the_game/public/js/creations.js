@@ -203,7 +203,7 @@ function createGifts(scene) {
         myGift.material = giftMaterial;
   
         myGift.position = new BABYLON.Vector3(2, 3, 2); 
-        myGift.scaling = new BABYLON.Vector3(1, 1, 1); 
+        myGift.scaling = new BABYLON.Vector3(1, 2, 1); 
         myGift.position.y = -100;
   
         myGift.name = "myGift";
@@ -215,9 +215,9 @@ function createGifts(scene) {
          scene.gifts = [];
          
          index = 0;
-         for ( var i = 0; i < sceneSize/sizeCube ; i++) {
-            for ( var j = 0; j < sceneSize/sizeCube ; j++) {
-                if(!lab[i][j] && Math.random() > 0.9 && nbGift > 0)
+         for ( var i = 0; i < sceneSize/sizeCube ; i = i + 2) {
+            for ( var j = 0; j < sceneSize/sizeCube ; j= j + 2) {
+                if(!lab[i][j] && Math.random() > 0.8 && nbGift > 0)
                 {
                     scene.gifts[index] = hero.doClone(myGift, skeletons, i);
                     scene.gifts[index].applyGravity = true;

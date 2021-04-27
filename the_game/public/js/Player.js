@@ -52,7 +52,15 @@ class Player {
 				mesh.applyGravity = true;
 				mesh.checkCollisions = false;
 
-				
+				//shadow 
+				var light = new BABYLON.PointLight("playerL", mesh.position, scene); //soleil
+				//light.position.y = 100;
+				light.intensity = 1;
+				var shadow = new BABYLON.ShadowGenerator(1024, light);
+				shadow.addShadowCaster(mesh);
+				shadow.useExponentialShadowMap = true;
+				container.lights.push(light);
+
 				// move
         		skeleton.animationPropertiesOverride = new BABYLON.AnimationPropertiesOverride();
        		 	skeleton.animationPropertiesOverride.enableBlending = true;
@@ -88,6 +96,7 @@ class Player {
 					nb++;
 					
 
+
 					let yMovement = 0;
 					let zMovement = 0;
 					if (mesh.position.y > 2) {
@@ -107,7 +116,7 @@ class Player {
 					}
 					if (inputStates.down) {
 						if(!isWalk) {
-							if (walk) scene.beginAnimation(skeleton, walk.from, walk.to, true,0.5);
+							if (walk) scene.beginAnimation(skeleton, walk.from, walk.to, true,1);
 							isWalk = true;
 						}
 						nb = 0;
@@ -164,12 +173,15 @@ class Player {
 										giftAudio.play();
 										this.score += 1;
 										gift.dispose();
+										drawCoin();
 									}
 								)
 							);
 						}
 						);
 					}
+					 
+					light.position = mesh.position;
 
 					this.positionX = mesh.position.x;
 					this.positionY = mesh.position.y;
