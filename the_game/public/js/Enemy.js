@@ -1,57 +1,55 @@
 class Enemy {
-	name;
-	vitesse;
-	score;
-	color;
 
-	mesh;
-	scene;
+	constructor(mesh,id, speed,  scene) {
 
-
-	constructor(name,scene, color, score) {
-
-		this.color = color;
-
-		this.name = name;
-		this.score = 0;
-        this.scene = this.scene;
-        this.initMesh(scene);
-
+        this.enemyMesh = mesh;
+        this.id = id;
+        this.scene = scene;
+        this.speed = speed;
+        mesh.Enemy = this;
 
 	}
 
-	initMesh(scene) {
-		BABYLON.SceneLoader.ImportMesh("", "./documents/models/tank/", "CartoonTank.babylon", scene, (newMeshes, particleSystems, skeletons) => {
-			this.mesh = newMeshes[0];
-			this.mesh.name = this.name;
-			let material = new BABYLON.StandardMaterial("material", scene);
-			material.diffuseTexture = new BABYLON.Texture("./documents/models/tank/tank_palette_red.png");
-			material.emissiveTexture = new BABYLON.Texture("./documents/models/tank/tank_palette_red.png");
-			this.mesh.material = material;
-			this.mesh.rotationOffset = 90; // the viewing angle
+    move(x, y ,z, ry) {
+		this.enemyMesh.position.x = x;
+		this.enemyMesh.position.z = z;
+		this.enemyMesh.position.y = y;
+        this.enemyMesh.rotation.y = ry;
+    }
 
-			// By default the box/tank is in 0, 0, 0, let's change that...
-			this.mesh.position.y = 16;
+    doClone(originalMesh, skeletons, id) {
+        let myClone;
 
-			this.mesh.speed = 1;
-			this.mesh.scaling = new BABYLON.Vector3(2, 1, 1);
-			this.mesh.frontVector = new BABYLON.Vector3(0, 0, 1);
-			this.mesh.applyGravity = true;
-			this.mesh.checkCollisions = false;
-			//this.this.image.showBoundingBox = true;
-
-			//let followCamera = createFollowCamera(scene, this.mesh);
-			//let followCamera = createFreeCamera(scene);
-			//scene.activeCamera = followCamera;
-
-			this.mesh.move = (positionX, positionY, positionZ, rotationY ) => {
-
-				this.mesh.rotation.y = rotationY;
-                this.mesh.position = new BABYLON.Vector3(positionX, positionY, positionZ);
-				//this.mesh.actionManager = new BABYLON.ActionManager(scene);
-
-			}
-		});
-	}
+        myClone = originalMesh.clone("clone_" + id);
+        myClone.position = new BABYLON.Vector3(0, 0, 0);
+      
+        if(!skeletons) return myClone;
+      
+        // The mesh has at least one skeleton
+        if(!originalMesh.getChildren()) {
+            myClone.skeleton = skeletons[0].clone("clone_" + id + "_skeleton");
+            return myClone;
+        } else {
+            if(skeletons.length === 1) {
+                // the skeleton controls/animates all children, like in the Dude model
+                let clonedSkeleton = skeletons[0].clone("clone_" + id + "_skeleton");
+                myClone.skeleton = clonedSkeleton;
+                let nbChildren = myClone.getChildren().length;
+      
+                for(let i = 0; i < nbChildren;  i++) {
+                    myClone.getChildren()[i].skeleton = clonedSkeleton
+                }
+                return myClone;
+            } else if(skeletons.length === originalMesh.getChildren().length) {
+                // each child has its own skeleton
+                for(let i = 0; i < myClone.getChildren().length;  i++) {
+                    myClone.getChildren()[i].skeleton() = skeletons[i].clone("clone_" + id + "_skeleton_" + i);
+                }
+                return myClone;
+            }
+        }
+      
+        return myClone;
+      }
 
 }

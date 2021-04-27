@@ -8,6 +8,7 @@ class Player {
 	positionZ;
 	rotationY;
 
+
 	constructor(name) {
 
 		let r = Math.floor(Math.random() * (255 - 0 + 1));
@@ -17,17 +18,19 @@ class Player {
 
 		this.name = name;
 		this.score = 0;
-		this.positionX = 0;
+		this.positionX = Math.floor(Math.random() * (10));
 		this.positionY = 1;
-		this.positionZ = 0;
+		this.positionZ =  Math.floor(Math.random() * (10));
 		this.vitesse = 2;
 
 		this.rotationY = 0;
+
 
 	}
 
 	createMe(scene){
 		let mesh;
+
 		BABYLON.SceneLoader.ImportMesh("Kachujin", "./documents/models/Personage/", "femme.babylon", scene, (newMeshes, particleSystems, skeletons) => {
 				mesh = newMeshes[0];
 				var skeleton = skeletons[0];
@@ -71,10 +74,8 @@ class Player {
 
 				let universalCamera = createUniversalCamera(scene);
 				let followCamera = createFollowCamera(scene, mesh);
-				//scene.activeCamera = followCamera;
 				scene.activeCameras.push(universalCamera);
 				scene.activeCameras.push(followCamera);
-				//mesh.parent = followCamera;
 				universalCamera.parent = mesh;
 
 				universalCamera.viewport = new BABYLON.Viewport(0, 0, 1, 1);
@@ -182,7 +183,7 @@ class Player {
 					this.rotationY = mesh.rotation.y;
 				}
 			});
-		return mesh;
+
 	}
 
 

@@ -2,7 +2,7 @@
 // Le labyrinth se genere avec un algorithme basé sur le random DFS 
 // https://www.baeldung.com/cs/maze-generation
 
-let  table , visited;
+
 let sizeCube = 30;
 let sceneSize = 600;
 
@@ -33,12 +33,8 @@ function createLabyrinth(scene, container) {
     cube.position.y = -100;
     cube.material = grassMaterial;
 
-    table = emptyLabyrinth(sceneSize, sceneSize, sizeCube, true);
-    visited = emptyLabyrinth(sceneSize, sceneSize, sizeCube, false);
 
-    dfsGenerateLabyrinth(sceneSize, sceneSize,sizeCube );
-
-    lab = table;
+    lab = labyrinth;
     walls = [];
     index = 0;
     
@@ -71,122 +67,66 @@ function createLabyrinth(scene, container) {
     return walls;
 }
 
-function createBord(l, w , cubeSize) {
-    x = table.length-1;
-    y = table[0].length-1;
 
-    xx = Math.floor(x/2)-1;
-    yy = Math.floor(y/2)-1;
-    for ( var i = 0; i < 5; i++) {
-        for ( var j = 0; j < 5; j++) {
-            table[xx+i][yy+j] = false ;
+
+
+function createEnemys(scene){
+    let meshTask = scene.assetsManager.addMeshTask(
+        "Kachujin task",
+        "Kachujin",
+        "./documents/models/Personage/",
+        "femme.babylon"
+      );
+      meshTask.onSuccess = function (task) {
+        onEnemyImported(
+          task.loadedMeshes,
+          task.loadedParticleSystems,
+          task.loadedSkeletons
+        );
+      };
+
+    function onEnemyImported(newMeshes, particleSystems, skeletons) {
+        
+        let enemy = newMeshes[0];
+
+        let material = new BABYLON.StandardMaterial("material", scene);
+        material.diffuseTexture = new BABYLON.Texture("./documents/models/Personage/Kachujin_diffuse.png");
+        material.emissiveTexture = new BABYLON.Texture("./documents/models/Personage/Kachujin_normal.png");
+        material.specularTexture = new BABYLON.Texture("./documents/models/Personage/Kachujin_specular.png");
+
+        enemy.material = material;
+  
+        enemy.position = new BABYLON.Vector3(0, 20, 0); 
+        enemy.scaling = new BABYLON.Vector3(0.12, 0.29, 0.12);
+        enemy.frontVector = new BABYLON.Vector3(0, 0, 1);
+        enemy.applyGravity = true;
+        enemy.checkCollisions = false;
+        enemy.name = "enemy";
+        enemy.y = 20;
+  
+         // params = id, speed, scaling, scene
+        let theEnnemy = new Enemy(enemy, -1, 0.1,  scene);
+         // make clones
+        scene.enemys = [];
+         
+        index = 0;
+        for (let p in allPlayers) 
+        { 
+            scene.enemys[index] = theEnnemy.doClone(enemy, skeletons, index);
+            scene.enemys[index].applyGravity = true;
+            scene.enemys[index].position.x = p.positionX;
+            scene.enemys[index].position.z = p.positionZ;
+            scene.enemys[index].position.y = p.positionY;
+
+            var temp = new Enemy(scene.enemys[index], index , p.vitesse, 0.1 , scene);
+            container.meshes.push(scene.enemys[index]);
+            index++;
         }
-
-    }
-}
-
-
-function dfsGenerateLabyrinth(l, w , cubeSize) {
-
-    startVertex = [0,0];
-    randomizedDFS(l , w ,cubeSize,startVertex);
-    randomGenerateLabyrinth(l, w , cubeSize);
-    createBord(l, w , cubeSize);
-
-}
-
-function randomizedDFS(l , w ,cubeSize,vertex) {
-    visited[vertex[0]][vertex[1]] = true;
-    nextVertex = unvisitedNeighbour(l , w, cubeSize , vertex);
-    while( nextVertex != null){
-        table[vertex[0]][vertex[1]] = false;
-
-        randomizedDFS(l , w ,cubeSize,nextVertex);
-        nextVertex = unvisitedNeighbour(l , w, cubeSize, vertex);
-    }
-
-    nextVertex = getRandomVertex(l , w, cubeSize);
-    while( nextVertex != null){
-        table[vertex[0]][vertex[1]] = false;
-
-        randomizedDFS(l , w ,cubeSize,nextVertex);
-        nextVertex = getRandomVertex(l , w, cubeSize);
-    }
-}
-
-function unvisitedNeighbour(l , w, cubeSize, vertex) {
-    let x = vertex[0];
-    let y = vertex[1];
-    let neighbours = [];
-    for( var i = -1; i < 2 ; i++ ){
-        for( var j = -1; j < 2 ; j++ ){
-            if(x+i < l/cubeSize &&  x+i>= 0  && y+j < w/cubeSize && y+j >= 0  && (i != j)  && (i != -j) && (-i != j)){
-                if(!visited[x+i][y+j]){
-                    neighbours.push([x+i, y+j]);
-                }
-            }
-        }
-    }
-    if(neighbours.length != 0){
-        r = Math.floor(Math.random() * (neighbours.length ))
-        markVisitedNeighbours(l , w, cubeSize,vertex);
-
-        return neighbours[r];
-    }
-    return null;
-}
-
-function markVisitedNeighbours(l , w, cubeSize,vertex) {
-    let x = vertex[0];
-    let y = vertex[1];
-    for( var i = -1; i < 2 ; i++ ){
-        for( var j = -1; j < 2 ; j++ ){
-            if(x+i < l/cubeSize &&  x+i>= 0  && y+j < w/cubeSize && y+j >= 0 && (i != j) ){
-                visited[x+i][y+j] = true;
-            }
-        }
-    }
-}
+      };
+  }
 
 
-function randomGenerateLabyrinth(l, w , cubeSize) {
-    
-    for ( var i = 0; i < l/cubeSize ; i++) {
-        for ( var j = 0; j < w/cubeSize ; j++) {
-            if(Math.random() > 0.8){
-                table[i][j] = false ;
 
-            }
-        }
-    }
-}
-
-
-function emptyLabyrinth(l, w , cubeSize, inside) {
-    var  t = [];
-    for ( var i = 0; i < l/cubeSize ; i++) {
-        t.push([]);
-        for ( var j = 0; j < w/cubeSize ; j++) {
-            t[i][j]= inside;
-        }
-    }
-    return t;
-}
-
-function getRandomVertex(l , w, cubeSize) {
-    let i = 0;
-    let j = 0;
-    let x = 0;
-    while(visited[i][j] && x <= 101) {
-        x++;
-        i = Math.floor(Math.random() * (l/cubeSize));
-        j = Math.floor(Math.random() * (w/cubeSize));
-    }
-    if(x >=  100){
-        return null;
-    }
-    return [i,j];
-}
 
 
 
@@ -213,7 +153,7 @@ function createGifts(scene) {
 
         myGift.material = giftMaterial;
   
-        myGift.position = new BABYLON.Vector3(2, 3, 2); 
+        myGift.position = new BABYLON.Vector3(0, -300, 0); 
         myGift.scaling = new BABYLON.Vector3(1, 2, 1); 
   
         myGift.name = "myGift";
@@ -221,7 +161,7 @@ function createGifts(scene) {
         myGift.y = -300;
   
          // params = id, speed, scaling, scene
-        let hero = new Gift(myGift, -1, 0.1, 3, scene);
+        let hero = new Gift(myGift, -1, 0.1, scene);
          // make clones
         scene.gifts = [];
          
@@ -230,14 +170,14 @@ function createGifts(scene) {
             for ( var j = 0; j < sceneSize/sizeCube ; j = j + 2) {
                 if(!lab[i][j] && Math.random() > 0.9 && nbGift > 0)
                 {
-                    scene.gifts[index] = hero.doClone(myGift, skeletons, i);
+                    scene.gifts[index] = hero.doClone(myGift, skeletons, index);
                     scene.gifts[index].applyGravity = true;
          
                     scene.gifts[index].position.x = -(sceneSize/2)+(i*(sizeCube)) ;
                     scene.gifts[index].position.z = -(sceneSize/2)+(j*(sizeCube)) ;
                     scene.gifts[index].position.y = sizeCube;
 
-                    var temp = new Gift(scene.gifts[index], index , 0.3, 0.1 , scene);
+                    var temp = new Gift(scene.gifts[index], index , 0.3, scene);
                     container.meshes.push(scene.gifts[index]);
                     index++;
                     nbGift--;

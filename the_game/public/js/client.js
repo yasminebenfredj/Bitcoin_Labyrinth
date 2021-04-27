@@ -1,7 +1,3 @@
-//var goodAudio = new Audio('documents/sounds/good.mp3'); //j'ai pas trouver mon bonheur dans Babylon.sounds
-//var badAudio = new Audio('documents/sounds/bad.mp3');
-//var boxAudio = new Audio('documents/sounds/box.wav');
-//var giftAudio = new Audio('documents/sounds/gift.wav');
 
 let canvas, mousePos;
 let me = undefined;
@@ -11,6 +7,7 @@ let player  = undefined;
 let time = 0;
 let nbVie = 3;
 let nbGift = 15;
+let  labyrinth;
 
 // Autres joueurs
 let allPlayers = {};
@@ -24,7 +21,7 @@ window.onload = init;
 function init() {
 
   username = prompt("Quel est votre nom?");
-  alert("Vous avez 3 minutes pour retrouver les 10 pieces et la clé du coffre. \nNe vous perdez pas ;)\nBon Courage "+ username);
+  alert("Vous avez 3 minutes pour trouver plus que 10 pieces. ;) \nNe vous perdez pas  "+ username);
 
   // initialize socket.io client-side
   socket = io.connect();
@@ -37,9 +34,7 @@ function init() {
 
   socket.on("connect", () => {
     // connection with server
-    me =  new Player(username, scene);
-    player  = me.createMe(scene);
-
+    me =  new Player(username);
     socket.emit("connection", me, username);
 
   });
@@ -51,16 +46,17 @@ function init() {
 
   });
 
+  socket.on("getLabyrinth", (table) => {
+    labyrinth = table;
+    startGame();
+    me.createMe(scene);
+  });
 
   socket.on("endOfGame", (winner) => {
     alert("Le jeu est terminer. Le gagnant est "+winner.name+" : "+winner.score+"pts. ");
   });
 
-
-
-  startGame();
 }
-
 
 
 function startGame() 
@@ -97,14 +93,10 @@ function startGame()
 
     if(player != undefined)
     {
-      moveAllPlayers();
-      allPlayers[me.name] = me
       socket.emit("updatePlayerData", me.name, me);
-
+      moveAllPlayers();
     }
     
-    //moveCurrentPlayer();
-
     if(scene.gifts) {
       for(var i = 0 ; i < scene.gifts.length ; i++) {
           scene.gifts[i].Gift.move(scene);
@@ -124,15 +116,10 @@ function createScene() {
   container = new BABYLON.AssetContainer(scene);
   scene.assetsManager = configureAssetManager(scene);
 
-  //let freeCamera = createFreeCamera(scene);
-  //let followCamera = createFollowCamera(scene, tank);
-  //scene.activeCamera = freeCamera;
-
   createGround(scene);
   createSky(scene);
   createLights(scene, container);
 
-  //container.meshes.push(scene.gifts);
   createwalls(scene, container);
   createLabyrinth(scene, container);
   createBase(scene) ;
@@ -178,14 +165,6 @@ function configureAssetManager(scene) {
 
   return assetsManager;
 }
-
-
-
-//var goodAudio = new Audio('documents/sounds/good.mp3'); //j'ai pas trouver mon bonheur dans Babylon.sounds
-//var badAudio = new Audio('documents/sounds/bad.mp3');
-//var boxAudio = new Audio('documents/sounds/box.wav');
-//var giftAudio = new Audio('documents/sounds/gift.wav');
-
 
 function loadSounds(scene) {
   var assetsManager = scene.assetsManager;
@@ -248,27 +227,20 @@ function loadSounds(scene) {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 function updatePlayers(listOfPlayers, playerNames) 
 {
   playersName = playerNames ;
-  allPlayers = listOfPlayers;
-}
 
+  if(Object.keys(allPlayers).length != Object.keys(listOfPlayers).length){
+    allPlayers = listOfPlayers;
+    createEnemys(scene);
+    console.log( scene.enemys);
+  }else{
+    allPlayers = listOfPlayers;
+
+  }
+
+}
 
 
 function moveAllPlayers() 
@@ -277,9 +249,18 @@ function moveAllPlayers()
   if(myMesh){
     myMesh.move();
   }
+  let i = 0;
+  for (let p in allPlayers) {
+      if(scene.enemys) {
+        console.log(p.positionX,p.positionY ,p.positionZ, p.rotationY);
+        if(p.name != me.name){
+          scene.enemys[i].Enemy.move(p.positionX,p.positionY ,p.positionZ, p.rotationY );
+        }
+    }
+    i++;
+  }
 
 }
-
 
 window.addEventListener("resize", () => {
   engine.resize()
@@ -350,9 +331,3 @@ function modifySettings() {
       }
   }, false);
 }
-
-
-
-
-
-

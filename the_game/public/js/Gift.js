@@ -1,9 +1,9 @@
 class Gift {
-    constructor(giftMesh, id, speed, scaling, scene) {
+    constructor(giftMesh, id, speed, scene) {
         this.giftMesh = giftMesh;
         this.id = id;
         this.scene = scene;
-        this.scaling = scaling;
+
 
         if(speed)
             this.speed = speed;
