@@ -1,5 +1,7 @@
-var goodAudio = new Audio('documents/sounds/good.mp3');
+var goodAudio = new Audio('documents/sounds/good.mp3'); //j'ai pas trouver mon bonheur dans Babylon.sounds
 var badAudio = new Audio('documents/sounds/bad.mp3');
+var boxAudio = new Audio('documents/sounds/box.wav');
+var giftAudio = new Audio('documents/sounds/gift.wav');
 
 let canvas, mousePos;
 let me = undefined;
@@ -7,6 +9,8 @@ let socket;
 var username, container;
 let player  = undefined;
 let time = 0;
+let nbVie = 3;
+let nbGift = 20;
 
 // Autres joueurs
 let allPlayers = {};
@@ -20,12 +24,13 @@ window.onload = init;
 function init() {
 
   username = prompt("Quel est votre nom?");
-  alert("Vous avez 1 minutes pour retrouver les 10 pieces et la clé du coffre. \nNe vous perdez pas ;)\n  Bon Courage! "+ username);
+  alert("Vous avez 3 minutes pour retrouver les 10 pieces et la clé du coffre. \nNe vous perdez pas ;)\nBon Courage "+ username);
 
   // initialize socket.io client-side
   socket = io.connect();
 
   playersScore = document.querySelector("#playersScore");
+  vies = document.querySelector("#vie");
 
 
 
@@ -66,12 +71,27 @@ function startGame()
 
   engine = new BABYLON.Engine(canvas, true);
   scene = createScene();
-  container.addAllToScene();
+  container.addAllToScene(); //comme asset pour contenir les ellement du jeu 
   modifySettings();
 
+  //for replay 
+  resetPlayers();
+  nbVie = 3;
   time = Date.now();
+
   engine.runRenderLoop(() => {
-    draw();
+    let endOfGame = endGame();
+    if(endOfGame){
+      var response;
+      var response = confirm("Voulez vous rejouer ? ");
+      if (response == true) {
+        startGame();
+      } else {
+        goodAudio.pause(); 
+        badAudio.pause(); 
+        alert("Au revoir!");
+      }
+    }
 
     if(player != undefined)
     {
@@ -94,6 +114,8 @@ function startGame()
 
 }
 
+
+
 function createScene() {
   let scene = new BABYLON.Scene(engine);
 
@@ -115,7 +137,6 @@ function createScene() {
   //container.meshes.push(scene.gifts);
   createwalls(scene, container);
   createLabyrinth(scene, container);
-  createGifts(scene);
   createBase(scene) ;
 
   return scene;

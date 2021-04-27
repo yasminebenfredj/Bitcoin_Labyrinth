@@ -20,7 +20,7 @@ class Player {
 		this.positionX = 0;
 		this.positionY = 1;
 		this.positionZ = 0;
-		this.vitesse = 2;
+		this.vitesse = 3;
 
 		this.rotationY = 0;
 
@@ -65,10 +65,9 @@ class Player {
 
 
 				//if (box) scene.beginAnimation(skeleton, box.from, box.to, true);
-				if (stop) scene.beginAnimation(skeleton, stop.from+1, stop.to, true, 0.5);
+				if (stop) scene.beginAnimation(skeleton, stop.from+1, stop.to, true, 2);
 				//if (pose) scene.beginAnimation(skeleton, pose.from, pose.to, true);
 
-				
 
 				let universalCamera = createUniversalCamera(scene);
 				let followCamera = createFollowCamera(scene, mesh);
@@ -132,6 +131,7 @@ class Player {
 
 					}
 					if (inputStates.space) {
+						boxAudio.play();
 						isWalk = true;
 						if (box) scene.beginAnimation(skeleton, box.from, box.to, true, 1.5);
 						nb = -10;
@@ -161,7 +161,8 @@ class Player {
 								new BABYLON.ExecuteCodeAction(
 									{ trigger: BABYLON.ActionManager.OnIntersectionEnterTrigger, parameter: gift },
 									() => {
-										this.score += 10;
+										giftAudio.play();
+										this.score += 1;
 										gift.dispose();
 									}
 								)

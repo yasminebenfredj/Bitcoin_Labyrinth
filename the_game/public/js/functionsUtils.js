@@ -24,33 +24,51 @@ function updatePlayersScore (players)
 
 
 
-function draw() {
-    var ctx = canvas.getContext('2d');
+function endGame() {
+    let playTime = Date.now() - time;
 
-    goodAudio.play(true);
-
-    let x;
-    if (time < 61000){
-        x = 0
+    if (nbVie > 1){
+        goodAudio.play(true); 
     }
-    if (time < 60000){
-        x = 1
-    }
-    if (time < 40000){
-        x = 2
-    }
-    if (time < 20000){
-        x = 3
+    else{
+        goodAudio.pause(); 
+        badAudio.play(true); 
     }
 
-    var img = new Image();
-    img.src = './documents/images/vie.jpg';
+    if (playTime > 300010 && scene.gifts){
 
-    img.onload = function() {
-        for (var i = 0; i <= x; i++) {
-          ctx.drawImage(img, 10, 10, 100, 100);
-      }
-    };
+        if(me.score < 10) {
+            badAudio.play(true); 
+
+            alert("Le jeu est terminer "+me.name+"!  \nVous avez perdu avec : "+me.score+" monnais recolter. ");
+            return true;
+        }
+        else{
+            badAudio.pause(); 
+            goodAudio.play(true); 
+            alert("Le jeu est terminer "+me.name+"! \nVous avez gagner avec : "+me.score+" monnais recolter.");
+            return true;
+        }
+    }
+
+    if (vies.firstChild && playTime >= 100000*(4-nbVie)){
+        vies.removeChild(vies.firstChild);
+        //if (vies.firstChild){vies.removeChild(vies.firstChild);}
+        nbVie--;
+    }
+    return false;
 }
 
 
+function resetPlayers(){
+    vies.innerHTML = "";
+
+    let userLineOfHTML = "<img src='./documents/images/vie.jpg' height='50px' width='50px'>";
+    vies.innerHTML += userLineOfHTML;
+    vies.innerHTML += userLineOfHTML;
+    vies.innerHTML += userLineOfHTML;
+
+    for (let player in allPlayers) {
+		player.score = 0;
+	}
+}

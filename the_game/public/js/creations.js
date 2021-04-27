@@ -67,6 +67,7 @@ function createLabyrinth(scene, container) {
             }
         }
     }
+    createGifts(scene);
     return walls;
 }
 
@@ -199,35 +200,36 @@ function createGifts(scene) {
         let giftMaterial = new BABYLON.StandardMaterial("Tree", scene);
         giftMaterial.diffuseTexture = new BABYLON.Texture("./documents/models/gift/BTC_Albedo.png");
 
-         myGift.material = giftMaterial;
+        myGift.material = giftMaterial;
   
-         myGift.position = new BABYLON.Vector3(2, 3, 2);  
-         myGift.position.y = sizeCube/2;
+        myGift.position = new BABYLON.Vector3(2, 3, 2); 
+        myGift.scaling = new BABYLON.Vector3(1, 1, 1); 
+        myGift.position.y = -100;
   
-         myGift.name = "myGift";
-         myGift.applyGravity = true;
+        myGift.name = "myGift";
+        myGift.applyGravity = true;
   
          // params = id, speed, scaling, scene
-         let hero = new Gift(myGift, -1, 0.1, 3, scene);
-  
+        let hero = new Gift(myGift, -1, 0.1, 3, scene);
          // make clones
          scene.gifts = [];
          
          index = 0;
          for ( var i = 0; i < sceneSize/sizeCube ; i++) {
             for ( var j = 0; j < sceneSize/sizeCube ; j++) {
-                if(!lab[i][j] && Math.random() > 0.8)
+                if(!lab[i][j] && Math.random() > 0.9 && nbGift > 0)
                 {
                     scene.gifts[index] = hero.doClone(myGift, skeletons, i);
                     scene.gifts[index].applyGravity = true;
          
                     scene.gifts[index].position.x = -(sceneSize/2)+(i*(sizeCube)) ;
                     scene.gifts[index].position.z = -(sceneSize/2)+(j*(sizeCube)) ;
-                    scene.gifts[index].position.y = sizeCube/2;
+                    scene.gifts[index].position.y = sizeCube;
 
                     var temp = new Gift(scene.gifts[index], index , 0.3, 0.1 , scene);
                     container.meshes.push(scene.gifts[index]);
                     index++;
+                    nbGift--;
     
                 }
             }

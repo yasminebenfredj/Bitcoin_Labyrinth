@@ -24,5 +24,18 @@ html, body {
 
 }
 
+.vies {
+
+  width:200px;
+  height:50px;
+
+  padding:10px;
+  position: absolute;
+  top: 100px;
+  margin-left: 1%;
+  margin-top: 355%;
+
+}
+
 
 

@@ -285,7 +285,7 @@ function createUniversalCamera(scene, target) {
     //Add the camera, to be shown as a cone and surrounding collision volume
     var camera = new BABYLON.UniversalCamera("MyCamera", new BABYLON.Vector3(0, 200,0), scene);
     //camera.attachControl(canvas, true);
-    camera.speed = 2;
+    camera.speed = 3;
     camera.angularSpeed = 0.07;
     camera.checkCollisions = true;
     camera.cameraRotation = new BABYLON.Vector2(0,180);
@@ -330,7 +330,5 @@ function createBase(scene) {
     });
 
 }
-
-
 
 
