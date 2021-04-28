@@ -55,6 +55,20 @@ io.on('connect', (socket) => {
 
 	});
 
+    
+	socket.on('restartGame', () => {
+		//generation du labirynth
+        labyrinth = emptyLabyrinth(sceneSize, sceneSize, sizeCube, true);
+        visited = emptyLabyrinth(sceneSize, sceneSize, sizeCube, false);
+        dfsGenerateLabyrinth(sceneSize, sceneSize , sizeCube);
+        for (let player in listOfPlayers) {
+            player.score = 0;
+        }
+		io.emit('getLabyrinth', labyrinth);
+		io.emit('updatePlayers', listOfPlayers, playerNames);
+
+	});
+
 	// Deconnection du joueur 
 	socket.on('disconnect', () => {
 		delete playerNames[socket.username];

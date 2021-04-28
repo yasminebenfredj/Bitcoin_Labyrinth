@@ -82,13 +82,8 @@ function startGame()
     let endOfGame = endGame(scene);
 
     if(endOfGame){
-      var response;
-      var response = confirm("Voulez vous rejouer ? ");
-      if (response == true) {
-        startGame();
-      } else {
-        alert("Au revoir!");
-      }
+      resetPlayers();
+      socket.emit("restartGame");
     }
 
     if(player != undefined)
@@ -234,7 +229,7 @@ function updatePlayers(listOfPlayers, playerNames)
   if(Object.keys(allPlayers).length != Object.keys(listOfPlayers).length){
     allPlayers = listOfPlayers;
     createEnemys(scene);
-    console.log( scene.enemys);
+    //console.log( scene.enemys);
   }else{
     allPlayers = listOfPlayers;
 
